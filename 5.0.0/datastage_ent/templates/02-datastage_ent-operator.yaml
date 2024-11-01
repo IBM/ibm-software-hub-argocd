@@ -1,0 +1,13 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-cpd-datastage-operator
+  namespace: {{ .Values.cpd_operators_namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  channel: {{ .Values.datastage_ent.sub_channel }}
+  installPlanApproval: Automatic
+  name: ibm-cpd-datastage-operator
+  source: ibm-cpd-datastage-operator-catalog
+  sourceNamespace: {{ .Values.cpd_operators_namespace }}

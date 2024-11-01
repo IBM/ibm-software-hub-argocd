@@ -1,0 +1,51 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cpd-root
+  namespace: openshift-gitops
+spec:
+  destination:
+    name: "in-cluster"
+    namespace: default
+  source:
+    path: 5.0.0/root
+    repoURL: 'https://github.com/IBM/ibm-software-hub-argocd'
+    targetRevision: main
+    helm:
+      #values: | 
+      #  ws_runtimes: #Provide component specific overrides here
+      #    additional_runtime_kind: 
+      #      - 231-r
+      parameters: #overall overrides that go into every child application and chart.
+        - name: cluster_name #change this to install into another cluster. You must add the cluster to ArgoCD first
+          value: in-cluster #default to the cluster running ArgoCD `in-cluster`
+        - name: cpd_instance_namespace
+          value: zen #[INPUT] instance namespace
+        - name: cpd_operators_namespace
+          value: operator-ns #[INPUT] operator namespace
+        - name: block_storage_class
+          value: managed-nfs-storage #[INPUT] block storage class
+        - name: file_storage_class
+          value: managed-nfs-storage #[INPUT] file storage class
+        - name: apply_entitlement
+          value: cpd-enterprise
+        #- name: pre_sync_hook_sa
+        #  value: "cpd-pre-sync-sa"
+        - name: pre_sync_job_image
+          value: icr.io/cpopen/cpd/olm-utils-v3:5.0.4
+        - name: components[0] #[INPUT] list all components to install/upgrade here
+          value: cpd_platform
+        - name: components[1]
+          value: watsonx_ai
+        #- name: target_revision 
+        #  value: dep-discovery #<--- set to use a different branch than the default "main"
+        #- name: repo_url #<-- [CAUTION] uncomment this to use a different repo for charts
+        #  value: https://github.com/IBM/ibm-software-hub-argocd 
+  project: default
+  syncPolicy:
+    retry:
+      limit: 10
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 3m0s

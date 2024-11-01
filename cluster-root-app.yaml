@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cluster-root-app
+  namespace: openshift-gitops
+spec:
+  destination:
+    name: ''
+    namespace: default
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: cluster-root-app
+    repoURL: 'https://github.com/IBM/ibm-software-hub-argocd'
+    targetRevision: main
+    helm:
+      valueObject:
+        components: #[INPUT] set components to install, include all dependencies 
+          - ibm-cert-manager
+          - ibm-licensing
+          - scheduler
+      parameters: #overall overrides that go into every chile application and charts.
+        #[INPUT] set namespace for each component; note that key cannot contains `_` so `ibm_cert_manager` and `ibm_licensing` are used here
+        - name: scheduler.namespace
+          value: my-scheduler-namespace
+        - name: ibm_cert_manager.namespace
+          value: cert-manager-ns
+        - name: ibm_licensing.namespace
+          value: licensing-ns
+        - name: cluster_name
+          value: in-cluster
+        - name: cpd_release
+          value: 5.0.0
+  project: default
+  syncPolicy:
+    retry:
+      limit: 10
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 3m0s

@@ -1,0 +1,12 @@
+cpd_release: 5.0.0
+cpd_operators_namespace: "cpd-operator"
+cpd_instance_namespace: "cpd-instance"
+block_storage_class: ""
+file_storage_class: ""
+pre_sync_hook_sa: "cpd-pre-sync-sa"
+pre_sync_job_image: icr.io/cpopen/cpd/olm-utils-v3:latest
+ibm_neo4j:
+  catsrc_image: icr.io/cpopen/ibm-cpd-neo4j-operator-catalog@sha256:330bd06050fffe382854e585d54a565536ce1d035828279daf9c5bf44a96caa0
+  catsrc_display_name: Neo4J
+  sub_channel: v1.0
+  dependencies: cpd_platform

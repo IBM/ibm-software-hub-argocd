@@ -1,0 +1,15 @@
+cpd_release: 5.0.0
+cpd_operators_namespace: "cpd-operator"
+cpd_instance_namespace: "cpd-instance"
+block_storage_class: ""
+file_storage_class: ""
+pre_sync_hook_sa: "cpd-pre-sync-sa"
+pre_sync_job_image: icr.io/cpopen/cpd/olm-utils-v3:latest
+ws_runtimes:
+  dependencies: cpd_platform,ccs
+  sub_channel: v9.0
+  catsrc_display_name: ibm-wsl-runtimes-9.0.0+20240528.164530.51
+  catsrc_image: icr.io/cpopen/ibm-cpd-ws-runtimes-operator-catalog@sha256:154d01f0d6be86fae7d128501f6169f4f4b0f6feba129e275b9148f3b7b88c61
+  runtime_kind: 241-py #default kind created by ws operator. 
+  cr_version: 9.0.0
+  additional_runtime_kind: [] #Override this value to install other kind of runtimes

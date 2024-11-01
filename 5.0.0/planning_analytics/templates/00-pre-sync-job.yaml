@@ -1,0 +1,42 @@
+#TODO: need to figure out RBAC on this job
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: planning-analytics-dep-wait-job-{{ .Values.cpd_instance_namespace | trunc 64 }}
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+  namespace: {{ .Values.cpd_instance_namespace }}
+spec:
+  template:
+    spec:
+      containers:
+      - name: dep
+        image: {{ .Values.pre_sync_job_image }}
+        command:
+          - bash
+          - -c
+          - |
+            function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; }
+            export cpd_operator_ns="{{ .Values.cpd_operators_namespace }}"
+            cd /opt/ansible/bin
+            while : ; do
+              python3 fetch-status.py --release={{ .Values.cpd_release }} --namespace={{ .Values.cpd_instance_namespace }} --components={{ .Values.planning_analytics.dependencies }}
+              if [ $? -eq 0 ]; then
+                break
+              fi
+              echo "[INFO] sleeping for 60s before retry..."
+              sleep 60
+            done
+            echo "===== Running: detach_pa_operators ====="
+            pa_subs=$(oc get subs -n ${cpd_operator_ns} -o=jsonpath='{range .items[?(@.spec.source == "ibm-planning-analytics-operator-catalog")]}{.metadata.name}{"\n"}')
+            pa_csvs=$(oc get csv -n ${cpd_operator_ns} | grep "IBM Planning Analytics" | awk '{ print $1 }')
+            pa_version=$(oc get csv -n ${cpd_operator_ns} -o=jsonpath='{range .items[?(@.spec.displayName == "IBM Planning Analytics")]}{.spec.version}')
+            pa_compare_version="4.7.3"
+            if [[ (! -z $pa_version  &&  $(version $pa_compare_version) -gt $(version $pa_version)) || ( $pa_subs == *"tm1"* || $pa_subs == *"spreadsheet"*) || ( $pa_csvs == *"tm1"* || $pa_csvs == *"spreadsheet"*)]]; then 
+                echo "$pa_compare_version  $pa_version"
+                [[ ! -z "$pa_subs" ]] && (echo "Deleting subs: $pa_subs" && oc delete subs -n ${cpd_operator_ns} $pa_subs) || echo "No PA subs found - nothing to delete" 
+                [[ ! -z "$pa_csvs" ]] && (echo "Deleting csvs: $pa_csvs" && oc delete csv -n ${cpd_operator_ns} $pa_csvs) || echo "No PA csvs found - nothing to delete"     
+            fi
+            echo "===== Completed: detach_pa_operators ====="
+      restartPolicy: Never
+      serviceAccount: {{ .Values.pre_sync_hook_sa }}

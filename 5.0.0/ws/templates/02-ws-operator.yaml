@@ -1,0 +1,13 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-cpd-ws-operator
+  namespace: {{ .Values.cpd_operators_namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  channel: {{ .Values.ws.sub_channel }}
+  installPlanApproval: Automatic
+  name: ibm-cpd-wsl
+  source: ibm-cpd-ws-operator-catalog
+  sourceNamespace: {{ .Values.cpd_operators_namespace }}

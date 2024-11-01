@@ -1,0 +1,24 @@
+apiVersion: openpages.cpd.ibm.com/v1
+kind:  OpenPagesService
+metadata:
+  name: openpagesservice-cr
+  namespace: {{ .Values.cpd_instance_namespace }}
+  labels:
+    app.kubernetes.io/instance: openpagesservice-cr
+    app.kubernetes.io/managed-by: olm-utils
+    app.kubernetes.io/name: openpages
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-options: ServerSideApply=true #use server side apply as partial patching
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  license:
+    accept: true
+    license: Enterprise
+  version: {{ .Values.openpages.cr_version }}
+{{- if not (eq .Values.block_storage_class "") }}
+  blockStorageClass: {{ .Values.block_storage_class }}
+{{- end}}
+{{- if not (eq .Values.file_storage_class "") }}
+  fileStorageClass: {{ .Values.file_storage_class }}
+{{- end}}

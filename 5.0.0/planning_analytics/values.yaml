@@ -1,0 +1,13 @@
+cpd_release: 5.0.0
+cpd_operators_namespace: "cpd-operator"
+cpd_instance_namespace: "cpd-instance"
+block_storage_class: ""
+file_storage_class: ""
+pre_sync_hook_sa: "cpd-pre-sync-sa"
+pre_sync_job_image: icr.io/cpopen/cpd/olm-utils-v3:latest
+planning_analytics:
+  catsrc_display_name: ibm-planning-analytics-5.0.0+20240522.182656.764-linux-amd64
+  catsrc_image: icr.io/cpopen/ibm-planning-analytics-operator-catalog@sha256:8188387d1d1da0cf55e08db41ab0799ed5d7f1cd7eeb35b6a5931d2d80abccbc
+  cr_version: 5.0.0
+  sub_channel: v8.0
+  dependencies: cpd_platform

@@ -1,0 +1,35 @@
+cpd_operators_namespace: "cpd-operator"
+cpd_instance_namespace: "cpd-instance"
+block_storage_class: ""
+file_storage_class: ""
+repo_url: https://github.com/IBM/ibm-software-hub-argocd
+target_revision: main
+components: []
+argocd_namespace: openshift-gitops
+pre_sync_hook_sa: "cpd-pre-sync-sa"
+cpd_release: 5.0.0
+pre_sync_job_image: icr.io/cpopen/cpd/olm-utils-v3:latest
+cluster_name: "in-cluster"
+apply_entitlement: ""
+
+cpfs:
+  catsrc_display_name: ibm-cs-install-4.7.0
+  catsrc_image: icr.io/cpopen/ibm-common-service-catalog@sha256:8c19e3109f19dd6ade365ad546ff40c03df9acb3f4e4e5b103ee0b20819adbf4
+  sub_channel: v4.7
+  size_profile: small
+cpd_platform:
+  create_namespace: false
+  catsrc_display_name: ibm-cp-datacore-5.0.0+20240711.170414.413.600-39
+  catsrc_image: icr.io/cpopen/ibm-cpd-platform-operator-catalog@sha256:99bf5835defae5d9c2e0100e4a212d1f0128bc1b56a44c934e7d67b1f22e40e9
+  cr_version: 5.0.0
+  cr_name: ibmcpd-cr
+  sub_channel: v6.0
+  custom_spec: {}
+nss:
+  sub_channel: v4.2
+zen:
+  catsrc_display_name: ibm-zen-6.0.1+20240708.121250.32
+  catsrc_image: icr.io/cpopen/ibm-zen-operator-catalog@sha256:6b43f09c1335a28e71669a0ecbd6fdee0ec2afe74d62c014b0d1d2d5a04b4ee3
+postgresql:
+  catsrc_display_name: ibm-cloud-native-postgresql-4.25.0
+  catsrc_image: icr.io/cpopen/ibm-cpd-cloud-native-postgresql-operator-catalog@sha256:0b46a3ec66622dd4a96d96243602a21d7a29cd854f67a876ad745ec524337a1f

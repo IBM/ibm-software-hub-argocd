@@ -1,0 +1,11 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-cpd-neo4j-operator-catalog-subscription
+  namespace: {{ .Values.cpd_operators_namespace }}
+spec:
+  channel: {{ .Values.ibm_neo4j.sub_channel}}
+  installPlanApproval: Automatic
+  name: ibm-cpd-neo4j
+  source: ibm-cpd-neo4j-operator-catalog
+  sourceNamespace: {{ .Values.cpd_operators_namespace }}

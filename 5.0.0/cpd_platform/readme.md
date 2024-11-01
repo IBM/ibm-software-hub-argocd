@@ -1,0 +1,1 @@
+This chart also include NSS operator set up and cpfs install/upgrade. Assumes the namespaces are already created.

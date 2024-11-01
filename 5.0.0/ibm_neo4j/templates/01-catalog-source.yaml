@@ -1,0 +1,11 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  namespace: {{ .Values.cpd_operators_namespace }}
+  name: ibm-cpd-neo4j-operator-catalog
+spec:
+  sourceType: grpc
+  image: {{ .Values.ibm_neo4j.catsrc_image }}
+  imagePullPolicy: Always
+  displayName: {{ .Values.ibm_neo4j.catsrc_display_name }}
+  publisher: IBM

@@ -1,0 +1,18 @@
+cert_manager_version: "4.2.4"
+licensing_version: "4.2.5"
+scheduler_version: "1.9.0-20230131.002448.53710bf"
+argocd_namespace: openshift-gitops
+branch: "main"
+cluster_name: in-cluster
+cpd_release: 5.0.0
+repo_url: https://github.com/IBM/ibm-software-hub-argocd
+scheduler:
+  namespace: "scheduler-ns"
+ibm_licensing:
+  namespace: "ibm-licensing"
+ibm_cert_manager:
+  namespace: "ibm-cert-manager"
+components:
+  - ibm-cert-manager
+  - ibm-licensing
+  - scheduler

@@ -1,0 +1,23 @@
+apiVersion: watsonxai.cpd.ibm.com/v1beta1
+kind:  Watsonxai
+metadata:
+  name: watsonxai-cr
+  namespace: {{ .Values.cpd_instance_namespace }}
+  labels:
+    app.kubernetes.io/instance: watsonxai-cr
+    app.kubernetes.io/managed-by: olm-utils
+    app.kubernetes.io/name: watsonx_ai
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-options: ServerSideApply=true #use server side apply as partial patching
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  license:
+    accept: true
+  fileStorageClass: {{ .Values.file_storage_class}}
+  blockStorageClass: {{ .Values.block_storage_class }}
+  version: {{ .Values.watsonx_ai.cr_version }}
+  tuning_disabled: {{ .Values.watsonx_ai.tuning_disabled }}
+{{- if .Values.watsonx_ai.custom_spec }}
+{{ .Values.watsonx_ai.custom_spec | indent 2 }}
+{{- end}}

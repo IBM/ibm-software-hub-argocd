@@ -1,0 +1,13 @@
+cpd_release: 5.0.0
+cpd_operators_namespace: "cpd-operator"
+cpd_instance_namespace: "cpd-instance"
+block_storage_class: ""
+file_storage_class: ""
+pre_sync_hook_sa: "cpd-pre-sync-sa"
+pre_sync_job_image: icr.io/cpopen/cpd/olm-utils-v3:latest
+factsheet:
+  catsrc_display_name: ibm-factsheet-4.0.0+20240524.032006.78
+  catsrc_image: icr.io/cpopen/ibm-cpd-factsheet-operator-catalog@sha256:a5762c0c57afd132dec5dd1deb030b0dbfc083afea97320ae598f6846fcb058a
+  cr_version: 5.0.0
+  sub_channel: v4.0
+  dependencies: ccs

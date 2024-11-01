@@ -1,0 +1,37 @@
+{{- range $i, $comp := .Values.components }}
+{{- $valid_comp_name := $comp | replace "-" "_" }}
+{{- $comp_values := get $.Values $valid_comp_name }}
+{{- $comp_ns := get $comp_values "namespace"}}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $comp | replace "_" "-" }}-cluster-app-{{ $.Values.cluster_name | replace "/" "-" |replace ":" "" }} #may need to re-adjust the truc size
+  namespace: {{ $.Values.argocd_namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+  labels:
+    cpd-component: {{ $comp }}
+    cluster: {{ $.Values.cluster_name }}
+spec:
+  destination:
+    name: {{ $.Values.cluster_name }}
+    namespace: default
+  source:
+    path: {{ $.Values.cpd_release }}/cluster-app-definitions/{{ $comp }}
+    repoURL: {{ $.Values.repo_url }}
+    targetRevision: {{ $.Values.branch }}
+    helm:
+      parameters:
+        - name: {{ $valid_comp_name }}.namespace
+          value: {{ get $comp_values "namespace" }}
+  project: default
+  syncPolicy:
+    automated: {}
+    retry:
+      limit: 5
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 3m0s
+{{- end }}

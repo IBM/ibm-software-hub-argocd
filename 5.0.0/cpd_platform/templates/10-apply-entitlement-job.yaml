@@ -1,0 +1,58 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: apply-entitlement-job-{{ .Values.cpd_instance_namespace }}
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/sync-options: Force=true,Replace=true
+  namespace: {{ .Values.cpd_instance_namespace }}
+spec:
+  template:
+    spec:
+      containers:
+      - name: apply-entitlement
+        image: {{ .Values.pre_sync_job_image }}
+        command:
+          - bash
+          - -c
+          - |
+            cd /opt/ansible/bin
+
+            # For 5.0.0
+            echo "Removing previous entitlements"
+            oc delete cm cpd-applied-entitlements -n {{ .Values.cpd_instance_namespace }} --ignore_not_found
+            oc delete ibmlicensingdefinition --all -n {{ .Values.cpd_instance_namespace }} --ignore_not_found
+
+            # For 5.1.0
+            # remove_entitlements=$( oc get cm cpd-applied-entitlements -n zen -o yaml | yq .data.applied-entitlements | jq '. | keys[]')
+
+            # for entitlement in ${remove_entitlements[@]}; do
+            #   echo $entitlement
+            #   echo "Running remove-entitlement with --cpd_instance_ns={{ .Values.cpd_instance_namespace }} --entitlement=${entitlement}"
+            # done            
+
+            if [ -z "{{ .Values.apply_entitlement }}" ]; then
+                exit 0
+            fi
+
+            IFS="," read -ra entitlement_values <<< "{{ .Values.apply_entitlement }}"
+            
+            for entitlement in ${entitlement_values[@]}; do
+                while : ; do
+                    echo "Running apply-entitlement with --release={{ .Values.cpd_release }} --cpd_instance_ns={{ .Values.cpd_instance_namespace }} --entitlement=${entitlement}"
+                    apply-entitlement --release={{ .Values.cpd_release }} --cpd_instance_ns={{ .Values.cpd_instance_namespace }} --entitlement=${entitlement}
+                    if [ $? -eq 0 ]; then
+                      break
+                    fi
+                    echo "[INFO] sleeping for 60s before retry..."
+                    sleep 60
+                done                  
+            done
+        volumeMounts:
+        - mountPath: /tmp/work
+          name: licensing-cr-volume
+      volumes:
+      - name: licensing-cr-volume
+        emptyDir: {}
+      restartPolicy: Never
+      serviceAccount: {{ .Values.pre_sync_hook_sa }}

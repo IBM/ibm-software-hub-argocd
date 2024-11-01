@@ -1,0 +1,13 @@
+cpd_release: 5.0.0
+cpd_operators_namespace: "cpd-operator"
+cpd_instance_namespace: "cpd-instance"
+block_storage_class: ""
+file_storage_class: ""
+pre_sync_hook_sa: "cpd-pre-sync-sa"
+pre_sync_job_image: icr.io/cpopen/cpd/olm-utils-v3:latest
+ws_pipelines:
+  dependencies: cpd_platform,ccs
+  catsrc_display_name: ibm-ws-pipelines-9.0.0+20240529.102102.769
+  catsrc_image: icr.io/cpopen/ibm-cpd-wspipelines-operator-catalog@sha256:368871ab658359060ddd9e50bb0633562ff88bbfbe76c85c97660ce7877910f8
+  sub_channel: v9.0
+  cr_version: 5.0.0

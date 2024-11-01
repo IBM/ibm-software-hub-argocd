@@ -1,0 +1,14 @@
+cpd_release: 5.0.0
+cpd_operators_namespace: "cpd-operator"
+cpd_instance_namespace: "cpd-instance"
+block_storage_class: ""
+file_storage_class: ""
+pre_sync_hook_sa: "cpd-pre-sync-sa"
+pre_sync_job_image: icr.io/cpopen/cpd/olm-utils-v3:latest
+dp:
+  sub_channel: v8.6
+  cr_name: dp-cr
+  dependencies: cpd_platform,analyticsengine
+  cr_version: 5.0.0
+  catsrc_display_name: ibm-dp-8.6.0+20240522.074313.1945-linux-amd64
+  catsrc_image: icr.io/cpopen/ibm-cpd-dp-operator-catalog@sha256:b3cc3780fe247fd23c0f249559bd3473d6fcb5c1518e87109a58245d50d4f105

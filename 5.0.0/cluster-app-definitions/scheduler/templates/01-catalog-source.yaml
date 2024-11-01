@@ -1,0 +1,17 @@
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: ibm-cpd-scheduling-catalog
+  namespace: {{ .Values.scheduler.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  displayName: {{ .Values.scheduler.catsrc_display_name }}
+  image: {{ .Values.scheduler.catsrc_image }}
+  publisher: IBM
+  sourceType: grpc
+  updateStrategy:
+    registryPoll:
+      interval: 30m0s
+      

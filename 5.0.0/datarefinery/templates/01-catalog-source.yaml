@@ -1,0 +1,15 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  namespace: {{ .Values.cpd_operators_namespace }}
+  name: ibm-cpd-datarefinery-operator-catalog
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  displayName: {{ .Values.datarefinery.catsrc_display_name }}
+  publisher: IBM
+  image: {{ .Values.datarefinery.catsrc_image }}
+  sourceType: grpc
+  updateStrategy:
+    registryPoll:
+      interval: 30m0s

@@ -1,0 +1,60 @@
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: cpd-platform
+  namespace: "{{ .Values.cpd_operators_namespace }}"
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  displayName: {{ .Values.cpd_platform.catsrc_display_name }}
+  image: {{ .Values.cpd_platform.catsrc_image }}
+  publisher: IBM
+  sourceType: grpc
+  updateStrategy:
+    registryPoll:
+      interval: 30m0s
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: opencloud-operators
+  namespace: {{ .Values.cpd_operators_namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  displayName: {{ .Values.cpfs.catsrc_display_name }}
+  image: {{ .Values.cpfs.catsrc_image }}
+  publisher: IBM
+  sourceType: grpc
+  updateStrategy:
+    registryPoll:
+      interval: 30m0s
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: ibm-zen-operator-catalog
+  namespace: {{ .Values.cpd_operators_namespace }}
+spec:
+  displayName: {{ .Values.zen.catsrc_display_name }}
+  image: {{ .Values.zen.catsrc_image }}
+  publisher: IBM
+  sourceType: grpc
+  updateStrategy:
+    registryPoll:
+      interval: 30m0s
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: cloud-native-postgresql-catalog
+  namespace: {{ .Values.cpd_operators_namespace }}
+spec:
+  displayName: {{ .Values.postgresql.catsrc_display_name}}
+  image: {{ .Values.postgresql.catsrc_image }}
+  publisher: IBM
+  sourceType: grpc
+  updateStrategy:
+    registryPoll:
+      interval: 30m0s

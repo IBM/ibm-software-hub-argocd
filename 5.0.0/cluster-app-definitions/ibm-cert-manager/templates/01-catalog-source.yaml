@@ -1,0 +1,16 @@
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: ibm-cert-manager-catalog
+  namespace: "{{ .Values.ibm_cert_manager.namespace }}"
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  displayName: {{ .Values.ibm_cert_manager.catsrc_display_name }}
+  image: {{ .Values.ibm_cert_manager.catsrc_image }}
+  publisher: IBM
+  sourceType: grpc
+  updateStrategy:
+    registryPoll:
+      interval: 30m0s

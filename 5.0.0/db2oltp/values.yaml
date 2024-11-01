@@ -1,0 +1,14 @@
+cpd_release: 5.0.0
+cpd_operators_namespace: "cpd-operator"
+cpd_instance_namespace: "cpd-instance"
+block_storage_class: ""
+file_storage_class: ""
+pre_sync_hook_sa: "cpd-pre-sync-sa"
+pre_sync_job_image: icr.io/cpopen/cpd/olm-utils-v3:latest
+db2oltp:
+  sub_channel: v6.0
+  cr_name: db2oltp-cr
+  cr_version: 5.0.0
+  dependencies: cpd_platform
+  catsrc_display_name: ibm-db2oltp-5.0.0+20240521.164650.2491.3353
+  catsrc_image: icr.io/cpopen/ibm-db2oltp-cp4d-operator-catalog@sha256:ee7f5894fe1f761bef47483194d24467951edaa7500655fe490588d24059e523

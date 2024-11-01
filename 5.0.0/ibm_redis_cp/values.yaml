@@ -1,0 +1,11 @@
+cpd_release: 5.0.0
+cpd_operators_namespace: "cpd-operator"
+cpd_instance_namespace: "cpd-instance"
+block_storage_class: ""
+file_storage_class: ""
+pre_sync_hook_sa: "cpd-pre-sync-sa"
+pre_sync_job_image: icr.io/cpopen/cpd/olm-utils-v3:latest
+ibm_redis_cp:
+  catsrc_display_name: ibm-redis-cp-1.1.9
+  catsrc_image: icr.io/cpopen/ibm-redis-cp-operator-catalog@sha256:516a1206c82e79985095233ba520700e746c0eb79a9efea28d35c3f8d3147c3f
+  sub_channel: v1.1

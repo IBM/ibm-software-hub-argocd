@@ -2,7 +2,7 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: CatalogSource
 metadata:
   namespace: {{ .Values.cpd_operators_namespace }}
-  name: ibm-cpd-watsonx-ai-ifm-operator-catalog
+  name: ibm-cpd-watsonx-governance-operator-catalog
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:

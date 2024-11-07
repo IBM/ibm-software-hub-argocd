@@ -11,7 +11,7 @@ wkc:
   cr_version: 5.0.0
   catsrc_display_name: ibm-wkc-5.0.0+20240527.133343.452-linux-amd64
   catsrc_image: icr.io/cpopen/ibm-cpd-wkc-operator-catalog@sha256:d9dcac8c21e9815acc6c6cb6aaeff7b25e97bb1b6fbb0040946a802e6c0565ab
-  dependencies: datarefinery,ccs,db2aaservice,db2u,analyticsengine,opencontent_elasticsearch,opencontent_fdb,datastage_ent
+  dependencies: ccs,db2aaservice,db2u,analyticsengine,opencontent_elasticsearch,opencontent_fdb,datastage_ent
   enable_knowledge_graph: false
   wkc_db2u_set_kernel_params: true
   custom_spec: {}

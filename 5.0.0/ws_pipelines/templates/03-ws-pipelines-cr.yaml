@@ -14,7 +14,6 @@ metadata:
 spec:
   license:
     accept: true
-    license: Enterprise
 {{- if not (eq .Values.block_storage_class "") }}
   blockStorageClass: {{ .Values.block_storage_class }}
 {{- end}}

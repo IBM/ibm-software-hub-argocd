@@ -10,4 +10,4 @@ ws:
   catsrc_image: icr.io/cpopen/ibm-cpd-ws-operator-catalog@sha256:a98d270461a6cd5020191d58764dd0f49011226854b05f435494fe1989bbcebd
   cr_version: 9.0.0
   sub_channel: v9.0
-  dependencies: ccs,datarefinery #ws_runtimes is not included because it doesn't have cr_name defined in global.yaml, hence cannot fetch status correctly
+  dependencies: ccs #ws_runtimes is not included because it doesn't have cr_name defined in global.yaml, hence cannot fetch status correctly

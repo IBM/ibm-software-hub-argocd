@@ -1,31 +1,34 @@
 ## Prerequisites
 
 1. Prepare an OpenShift cluster (target cluster) with proper storage classes required by CPD/WatsonX, and set up image pull secrets  https://www.ibm.com/docs/en/cloud-paks/cp-data/5.0.x?topic=installing-preparing-your-cluster
-2. Install Openshift Gitops (ArgoCD). https://docs.openshift.com/gitops/1.14/installing_gitops/installing-openshift-gitops.html. ArgoCD may be installed in a different cluster. If so, connect ArgoCD with your target cluster. https://github.ibm.com/IBMSoftwareHub/ibm-software-hub-argoCD/wiki/Adding-Cluster-to-ArgoCD
+2. Install Openshift Gitops (ArgoCD). https://docs.openshift.com/gitops/1.14/installing_gitops/installing-openshift-gitops.html. ArgoCD may be installed in a different cluster. If so, connect ArgoCD with your target cluster. https://argo-cd.readthedocs.io/en/latest/user-guide/commands/argocd_cluster_add/
 3. Configure ArgoCD to pull from https://github.com/IBM/ibm-software-hub-argocd.git repo. See https://argo-cd.readthedocs.io/en/stable/user-guide/private-repositories/.
 4. Set up global pull secret in the target cluster. See https://www.ibm.com/docs/en/cloud-paks/cp-data/5.0.x?topic=cluster-updating-global-image-pull-secret
 5. Deploy all cluster single components: cert-manager, ibm licensing service and CPD scheduler. Use either cpd-cli or ArgoCD. cpd-cli methods: https://www.ibm.com/docs/en/cloud-paks/cp-data/5.0.x?topic=cluster-installing-shared-components. ArgoCD method: See `install-cluster-singleton.md` file.
 
 ## Procedure for Install/Upgrade
 
-1. Create operator and instance namespaces. 
+1. Create operator and instance namespaces on the target cluster. 
 ```
 oc new-project <operator-ns>
 oc new-project <operand-ns>
 ```
 
-2. Grant ArgoCD access to these new namespaces. If ArgoCD is on the same cluster as the target cluster, run
+2. Grant ArgoCD access to these new namespaces. If ArgoCD is on the same cluster as the target cluster, run the following. Replace `openshift-gitops` if ArgoCD is installed in a different namespace. Skip this step if ArgoCD is not running on the target cluster.
 ```bash
 oc label namespace <operator-ns> argocd.argoproj.io/managed-by=openshift-gitops
 oc label namespace <operand-ns> argocd.argoproj.io/managed-by=openshift-gitops
+oc adm policy add-role-to-user admin system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller --rolebinding-name="argocpd-admin-rb" --namespace=<operator-ns>
+
+oc adm policy add-role-to-user admin system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller --rolebinding-name="argocpd-admin-rb"  --namespace=<instance-ns>
 ```
 
-3. Create a `ibm-entitlement-key` secret in the instance namespace. 
+3. Create a `ibm-entitlement-key` secret in the instance namespace on the target cluster. 
    ``` bash
    oc create secret docker-registry ibm-entitlement-key  --docker-username=cp --docker-server=cp.icr.io -n <cpd-instance-ns> --docker-password=<ibm-entilement-key>
    ```
 
-4. Deploy a cpd-root app.
+4. Deploy a cpd-root app on the ArgoCD cluster.
 ```yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application

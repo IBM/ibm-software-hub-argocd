@@ -1,9 +1,5 @@
 # Deployment for ikc_standard
 
-##### Pre Requisite
- - Need to install Openshift AI using [link](https://github.ibm.com/IBMPrivateCloud/ibm-watsonx-ai-ifm-bundle/wiki/Install-OpenShift-AI)
- 
-
 ##### issues that could arise with db2u
  - `c-db2oltp-wkc` stuck in pending,  
   ```

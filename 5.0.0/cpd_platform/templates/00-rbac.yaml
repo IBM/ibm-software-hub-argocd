@@ -94,3 +94,44 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: pre-sync-role
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: zen-sub-sa
+  namespace: {{ .Values.cpd_operators_namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: zen-sub-role
+  namespace: {{ .Values.cpd_operators_namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+rules: 
+- apiGroups: ["operators.coreos.com"]
+  resources:
+  - subscriptions
+  - clusterserviceversions
+  verbs:
+  - get
+  - list
+  - delete
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: zen-sub-rb
+  namespace: {{ .Values.cpd_operators_namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+subjects:
+  - kind: ServiceAccount
+    name: zen-sub-sa
+    namespace: {{ .Values.cpd_operators_namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: zen-sub-role

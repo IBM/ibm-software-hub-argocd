@@ -1,0 +1,6 @@
+argocd_namespace: openshift-gitops
+ibm_cert_manager:
+  catsrc_display_name: ibm-cert-manager-4.2.10
+  catsrc_image: icr.io/cpopen/ibm-cert-manager-operator-catalog@sha256:c41e4d3314fac0d2cf5f08e7db85801cb2098d37d0aa8104a347e9e82526e914
+  namespace: ibm-cert-manager
+  sub_channel: v4.2

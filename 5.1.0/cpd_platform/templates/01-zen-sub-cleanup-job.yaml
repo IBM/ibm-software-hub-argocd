@@ -1,0 +1,43 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: zen-sub-cleanup-job
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/sync-options: Force=true,Replace=true
+  namespace: {{ .Values.cpd_operators_namespace }}
+spec:
+  template:
+    spec:
+      containers:
+      - name: cleanup
+        image: {{ .Values.pre_sync_job_image }}
+        command:
+          - bash
+          - -c
+          - |
+            zen_sub_name=$(oc get sub -l operators.coreos.com/ibm-zen-operator.{{ .Values.cpd_operators_namespace }} -o name --ignore-not-found)
+            zen_csv_name=$(oc get csv -l operators.coreos.com/ibm-zen-operator.{{ .Values.cpd_operators_namespace }} -o name --ignore-not-found)
+            if [[ $zen_sub_name != "" ]]; then
+              echo "zen operator '${zen_sub_name}' found"
+              zen_sub_channel=$(oc get $zen_sub_name -o jsonpath='{.spec.channel}')
+              if [[ $zen_sub_channel != "{{.Values.zen.sub_channel}}" ]]; then
+                echo "deleting '$zen_sub_name'"
+                oc delete ${zen_sub_name}
+              fi
+            else
+              echo "No zen operator subscription found. Skip deletion"
+            fi
+            if [[ $zen_csv_name != "" ]]; then
+              echo "zen operator ${zen_csv_name} found"
+              zen_csv_version=$(oc get $zencsv_name -o jsonpath='{.spec.version}')
+              if [[ $zen_csv_version != {{ .Values.zen.csv_version }} ]]; then
+                echo "deleting $zen_csv_name"
+                oc delete $zen_csv_name
+              fi
+            else
+              echo "No zen operator csv found. Skip deletion"
+            fi
+      restartPolicy: Never
+      serviceAccount: zen-sub-sa

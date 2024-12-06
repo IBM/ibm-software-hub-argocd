@@ -1,0 +1,13 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-cpd-wml-operator
+  namespace: {{ .Values.cpd_operators_namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  channel: {{ .Values.wml.sub_channel }}
+  installPlanApproval: Automatic
+  name: ibm-cpd-wml-operator
+  source: ibm-cpd-wml-operator-catalog
+  sourceNamespace: {{ .Values.cpd_operators_namespace }}

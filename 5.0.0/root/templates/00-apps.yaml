@@ -27,6 +27,8 @@ metadata:
   labels:
     cpd-component: {{ $comp }}
     cluster: {{ $.Values.cluster_name }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io #this finalizer is required to enable k8s garbage collection when the app is deleted
 spec:
   destination:
     name: {{ $.Values.cluster_name }}

@@ -1,0 +1,29 @@
+#TODO: need to figure out RBAC on this job
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ikc-standard-dep-wait-job-{{ .Values.cpd_instance_namespace | trunc 64 }}
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+  namespace: {{ .Values.cpd_instance_namespace }}
+spec:
+  template:
+    spec:
+      containers:
+      - name: dep
+        image: {{ .Values.pre_sync_job_image }}
+        command:
+          - bash
+          - -c
+          - |
+            cd /opt/ansible/bin
+            while : ; do
+              python3 fetch-status.py --release={{ .Values.cpd_release }} --namespace={{ .Values.cpd_instance_namespace }} --components={{ .Values.ikc_standard.dependencies }}
+              if [ $? -eq 0 ]; then
+                break
+              fi
+              echo "[INFO] sleeping for 60s before retry..."
+              sleep 60
+            done
+      restartPolicy: Never
+      serviceAccount: {{ .Values.pre_sync_hook_sa }}

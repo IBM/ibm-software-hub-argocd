@@ -1,0 +1,13 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-cert-manager-operator
+  namespace: {{ .Values.ibm_cert_manager.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  channel: {{ .Values.ibm_cert_manager.sub_channel }}
+  installPlanApproval: installPlanApproval
+  name: ibm-cert-manager-operator
+  source: ibm-cert-manager-catalog
+  sourceNamespace: {{ .Values.ibm_cert_manager.namespace }}

@@ -2,7 +2,6 @@ cpd_operators_namespace: "cpd-operator"
 cpd_instance_namespace: "cpd-instance"
 block_storage_class: ""
 file_storage_class: ""
-repo_url: https://github.com/IBM/ibm-software-hub-argocd
 target_revision: main
 components: []
 argocd_namespace: openshift-gitops
@@ -30,6 +29,8 @@ nss:
 zen:
   catsrc_display_name: ibm-zen-6.0.1+20240708.121250.32
   catsrc_image: icr.io/cpopen/ibm-zen-operator-catalog@sha256:6b43f09c1335a28e71669a0ecbd6fdee0ec2afe74d62c014b0d1d2d5a04b4ee3
+  sub_channel: v6.0
+  csv_version: 6.0.2
 postgresql:
   catsrc_display_name: ibm-cloud-native-postgresql-4.25.0
   catsrc_image: icr.io/cpopen/ibm-cpd-cloud-native-postgresql-operator-catalog@sha256:0b46a3ec66622dd4a96d96243602a21d7a29cd854f67a876ad745ec524337a1f

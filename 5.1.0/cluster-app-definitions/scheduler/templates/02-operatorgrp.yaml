@@ -1,0 +1,8 @@
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: operatorgroup
+  namespace: {{ .Values.scheduler.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+#starting in 5.1.0 scheduler uses all-namespace mode, hence omitting the spec part

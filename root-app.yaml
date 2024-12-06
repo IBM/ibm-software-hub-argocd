@@ -29,10 +29,8 @@ spec:
           value: managed-nfs-storage #[INPUT] file storage class
         - name: apply_entitlement
           value: cpd-enterprise
-        #- name: pre_sync_hook_sa
-        #  value: "cpd-pre-sync-sa"
-        - name: pre_sync_job_image
-          value: icr.io/cpopen/cpd/olm-utils-v3:5.0.4
+        - name: pre_sync_job_image #TODO switch to icr.io/cpopen/olm-utils-v3:latest once 5.1.0 reaches GA
+          value: cp.stg.icr.io/cp/olm-utils-v3:latest
         - name: components[0] #[INPUT] list all components to install/upgrade here
           value: cpd_platform
         - name: components[1]

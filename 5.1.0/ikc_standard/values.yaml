@@ -1,0 +1,15 @@
+block_storage_class: ''
+cpd_instance_namespace: cpd-instance
+cpd_operators_namespace: cpd-operator
+cpd_release: 5.1.0
+file_storage_class: ''
+ikc_standard:
+  catsrc_display_name: ibm-knowledge-catalog-5.1.0+20241107.121222.387
+  catsrc_image: icr.io/cpopen/ibm-cpd-knowledge-catalog-operator-catalog@sha256:32c7a81ba81a0e6ff3e7f99f72d78a2d9e6350d465462ff1c27c8916c26181a4
+  cr_name: ikc-standard-cr
+  cr_version: 5.1.0
+  dependencies: cpd_platform,ccs,analyticsengine,datarefinery,watsonx_ai_ifm,db2aaservice
+  enable_semantic_automation: false
+  sub_channel: v6.0
+pre_sync_hook_sa: cpd-pre-sync-sa
+pre_sync_job_image: icr.io/cpopen/cpd/olm-utils-v3:latest

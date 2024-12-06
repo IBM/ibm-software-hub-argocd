@@ -1,0 +1,13 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-cpd-scheduling-catalog-subscription
+  namespace: {{ .Values.scheduler.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  channel: {{ .Values.scheduler.sub_channel }}
+  installPlanApproval: Automatic
+  name: ibm-cpd-scheduling-operator
+  source: ibm-cpd-scheduling-catalog
+  sourceNamespace: {{ .Values.scheduler.namespace }}

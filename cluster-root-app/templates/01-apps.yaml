@@ -14,13 +14,18 @@ metadata:
     cpd-component: {{ $comp }}
     cluster: {{ $.Values.cluster_name }}
 spec:
+  ignoreDifferences:
+  - group: operators.coreos.com
+    kind: OperatorGroup
+    jsonPointers:
+    - /spec/targetNamespaces
   destination:
     name: {{ $.Values.cluster_name }}
     namespace: default
   source:
     path: {{ $.Values.cpd_release }}/cluster-app-definitions/{{ $comp }}
+    targetRevision: {{ $.Values.target_revision }}
     repoURL: {{ $.Values.repo_url }}
-    targetRevision: {{ $.Values.branch }}
     helm:
       parameters:
         - name: {{ $valid_comp_name }}.namespace

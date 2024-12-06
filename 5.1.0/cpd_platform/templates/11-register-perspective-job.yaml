@@ -1,0 +1,67 @@
+#TODO: need to figure out RBAC on this job
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: register-perspective-job-{{ .Values.cpd_instance_namespace | trunc 64 }}
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+  namespace: {{ .Values.cpd_instance_namespace }}
+spec:
+  template:
+    spec:
+      volumes:
+        - name: log-cache
+          emptyDir:
+            sizeLimit: 50Mi
+      containers:
+      - name: dep
+        volumeMounts:
+          - mountPath: /tmp/work
+            name: log-cache
+        image: {{ .Values.pre_sync_job_image }}
+        env:
+          - name: ANSIBLE_LOG_PATH
+            value: "/tmp/work/register-perspective.log"
+        command:
+          - bash
+          - -c
+          - |
+            set +e
+            cd /opt/ansible/bin
+            export cpd_instance_ns={{ .Values.cpd_instance_namespace }}
+            export log_level=debug
+            export comp_list={{ join "," .Values.components }}
+            ROUTE=$(oc get cm -n $cpd_instance_ns product-configmap -o "jsonpath={.data.URL_PREFIX}" 2>&1)
+            retVal=$?
+            if [[ $retVal -ne 0 ]] || [[ -z ${ROUTE} ]]; then
+                echo "Non-zero exit code \"$retVal\" is returned or variable ROUTE is unset when getting a route from the product-configmap. Skipping running the register_perspectives.py script"
+            else
+                ROUTE_EXISTS=$(echo $ROUTE | grep "not found" --count)
+                if [[ $ROUTE_EXISTS -eq 1 ]]; then
+                    echo "Unable to get a route. Skipping running the register_perspectives.py script"
+                else
+                    echo "The ROUTE variable is set to $ROUTE. Continue with registering perspectives"
+                    NGX_POD=$(oc get pods --namespace $cpd_instance_ns -l component=ibm-nginx -o 'jsonpath={.items[0].metadata.name}')
+                    retVal=$?
+                    if [[ $retVal -ne 0 ]] || [[ -z ${NGX_POD} ]]; then
+                    echo "Non-zero exit code \"$retVal\" is returned or variable NGX_POD is unset. Skipping running the register_perspectives.py script"
+                    else
+                    BROKER_TOKEN=$(oc exec --namespace $cpd_instance_ns $NGX_POD -- cat /secret-volumes/zen-service-broker-secret/token ) #2> /dev/null)
+                    retVal=$?
+                    if [[ $retVal -ne 0 ]] || [[ -z ${BROKER_TOKEN} ]]; then
+                        echo "Non-zero exit code \"$retVal\" is returned or variable BROKER_TOKEN is unset. Skipping running the register_perspectives.py script"
+                    else
+                        BEARER_JSON=$(oc exec --namespace $cpd_instance_ns $NGX_POD -- curl -k -s -X GET https://zen-core-api-svc:4444/internal/v1/service_token -H "secret: $BROKER_TOKEN" 2>/dev/null)
+                        retVal=$?
+                        if [[ $retVal -ne 0 ]] || [[ -z ${BEARER_JSON} ]]; then
+                            echo "Non-zero exit code \"$retVal\" is returned or variable BEARER_JSON is unset. Skipping running the register_perspectives.py script"
+                        else
+                            export REGISTER_PERSPECTIVE_LOG_LEVEL=$log_level
+                            python3 -u register_perspectives.py --components=$comp_list --cpd_instance_ns=$cpd_instance_ns --route=$ROUTE --bearer_json=$BEARER_JSON
+                        fi
+                    fi
+                    fi
+                fi
+            fi 
+      restartPolicy: Never
+      serviceAccount: {{ .Values.pre_sync_hook_sa }}

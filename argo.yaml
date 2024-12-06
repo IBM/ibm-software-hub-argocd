@@ -81,6 +81,26 @@ spec:
     scopes: '[groups]'
   extraConfig:
     resource.customizations: |
+      scheduling.scheduler.spectrumcomputing.ibm.com:
+        health.lua: |
+          hs = {}
+          if obj.status ~= nil then
+            if obj.status.cpd-schedulingStatus ~=nil then
+              if obj.status.cpd-schedulingStatus == "Completed" then
+                hs.status = "Healthy"
+                hs.message = ""
+                return hs
+              end
+              if obj.status.cpd-schedulingStatus == "Failed" then
+                hs.status = "Degraded"
+                hs.message = ""
+                return hs
+              end
+            end
+          end
+          hs.status = "Progressing"
+          hs.message = ""
+          return hs
       wspipelines.cpd.ibm.com/WSPipelines:
         health.lua: |
           hs = {}
@@ -750,18 +770,16 @@ spec:
         health.lua: |
           hs = {}
           if obj.status ~= nil then
-            if obj.status.conditions ~= nil then
-              for i, condition in ipairs(obj.status.conditions) do
-                if condition.type == "Failure" and condition.status == "True" then
-                  hs.status = "Degraded"
-                  hs.message = condition.message
-                  return hs
-                end
-                if condition.type == "Successful" and condition.status == "True" then
-                  hs.status = "Healthy"
-                  hs.message = condition.message
-                  return hs
-                end
+            if obj.status.controlPlaneStatus ~= nil then
+              if obj.status.controlPlaneStatus == "Completed" then
+                hs.status = "Healthy"
+                hs.message = ""
+                return hs
+              end
+              if obj.status.controlPlaneStatus == "Failed" then
+                hs.status = "Degraded"
+                hs.message = ""
+                return hs
               end
             end
           end
@@ -773,18 +791,16 @@ spec:
         health.lua: |
           hs = {}
           if obj.status ~= nil then
-            if obj.status.conditions ~= nil then
-              for i, condition in ipairs(obj.status.conditions) do
-                if condition.type == "Failure" and condition.status == "True" then
-                  hs.status = "Degraded"
-                  hs.message = condition.message
-                  return hs
-                end
-                if condition.type == "Successful" and condition.status == "True" then
-                  hs.status = "Healthy"
-                  hs.message = condition.message
-                  return hs
-                end
+            if obj.status.analyticsengineStatus ~= nil then
+              if obj.status.analyticsengineStatus == "Completed" then
+                hs.status = "Healthy"
+                hs.message = ""
+                return hs
+              end
+              if obj.status.analyticsengineStatus == "Failed" then
+                hs.status = "Degraded"
+                hs.message = ""
+                return hs
               end
             end
           end

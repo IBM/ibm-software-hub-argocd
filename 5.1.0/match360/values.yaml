@@ -1,0 +1,13 @@
+block_storage_class: ''
+cpd_instance_namespace: cpd-instance
+cpd_operators_namespace: cpd-operator
+cpd_release: 5.1.0
+file_storage_class: ''
+match360:
+  catsrc_display_name: ibm-mdm-4.3.0+20241114.144252.11
+  catsrc_image: icr.io/cpopen/mdm-operator-catalog@sha256:aeb83bea97bdb74eaa3fbbb67a2e833b84fa9007e707089a57fc4941205e4651
+  cr_version: 4.3.49
+  dependencies: cpd_platform,ccs
+  sub_channel: v4.3
+pre_sync_hook_sa: cpd-pre-sync-sa
+pre_sync_job_image: icr.io/cpopen/cpd/olm-utils-v3:latest

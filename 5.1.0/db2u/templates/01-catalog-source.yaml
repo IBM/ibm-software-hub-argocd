@@ -1,0 +1,15 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  name: ibm-db2uoperator-catalog
+  namespace: {{ .Values.cpd_operators_namespace }}
+spec:
+  displayName: {{ .Values.db2u.catsrc_display_name }}
+  image: {{ .Values.db2u.catsrc_image }}
+  publisher: IBM
+  sourceType: grpc
+  updateStrategy:
+    registryPoll:
+      interval: 45m

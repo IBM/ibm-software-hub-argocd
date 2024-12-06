@@ -1,0 +1,25 @@
+apiVersion: dp.cpd.ibm.com/v1beta1
+kind: DP
+metadata:
+  name: "{{ .Values.dp.cr_name }}"
+  namespace: "{{ .Values.cpd_instance_namespace }}"
+  labels:
+    icpdsupport/addOnId: data-privacy
+    app.kubernetes.io/instance: "{{ .Values.dp.cr_name }}"
+    app.kubernetes.io/managed-by: olm-utils
+    app.kubernetes.io/name: dp  
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-options: ServerSideApply=true #use server side apply as partial patching
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  version: "{{ .Values.dp.cr_version }}"
+  license:
+    accept: true
+    license: Enterprise
+{{- if not (eq .Values.block_storage_class "") }}
+  blockStorageClass: {{ .Values.block_storage_class }}
+{{- end}}
+{{- if not (eq .Values.file_storage_class "") }}
+  fileStorageClass: {{ .Values.file_storage_class }}
+{{- end}}

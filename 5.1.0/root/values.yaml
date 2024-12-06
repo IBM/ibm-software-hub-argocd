@@ -1,0 +1,138 @@
+cpd_operators_namespace: "cpd-operator"
+cpd_instance_namespace: "cpd-instance"
+block_storage_class: ""
+file_storage_class: ""
+repo_url: https://github.com/IBM/ibm-software-hub-argocd
+target_revision: main
+components: []
+argocd_namespace: openshift-gitops
+pre_sync_hook_sa: "cpd-pre-sync-sa"
+cpd_release: 5.1.0
+pre_sync_job_image: icr.io/cpopen/cpd/olm-utils-v3:latest
+
+cluster_name: "in-cluster"
+argocd_project: default
+
+ccs:
+  required_charts:
+    - cpd_platform
+    - opencontent_elasticsearch
+
+ws:
+  required_charts:
+    - cpd_platform
+    - opencontent_elasticsearch
+    - ccs
+    - datarefinery
+    - ws_runtimes
+wml:
+  required_charts:
+    - cpd_platform
+    - ccs
+    - opencontent_elasticsearch
+ws_pipelines:
+  required_charts:
+    - cpd_platform
+    - ccs
+    - opencontent_elasticsearch
+ikc_standard:
+  required_charts:
+    - cpd_platform
+    - opencontent_elasticsearch
+    - ccs
+    - wkc
+    - db2u
+    - analyticsengine
+    - datarefinery
+    - db2aaservice
+    - watsonx_ai_ifm
+    - datastage_ent
+
+factsheet:
+  required_charts:
+    - cpd_platform
+    - opencontent_elasticsearch
+    - ccs
+db2aaservice:
+  required_charts:
+    - cpd_platform
+    - db2u
+
+db2oltp:
+  required_charts:
+    - cpd_platform
+    - db2u
+
+openpages:
+  required_charts:
+    - cpd_platform
+    - db2u
+    - db2aaservice
+    - opencontent_rabbitmq
+
+match360:
+  required_charts:
+    - cpd_platform
+    - opencontent_elasticsearch
+    - ccs
+    - ibm_redis_cp
+    - opencontent_rabbitmq
+    - opencontent_fdb
+    - ibm_neo4j #added in 5.0.1
+openscale:
+  required_charts:
+    - cpd_platform
+
+watsonx_governance:
+  required_charts:
+    - cpd_platform
+    - db2u
+    - db2aaservice
+    - opencontent_rabbitmq
+    - opencontent_elasticsearch
+    - ccs
+    - factsheet
+    - openpages
+    - openscale
+    - wml
+    - watsonx_ai_ifm
+
+cognos_analytics:
+  required_charts:
+    - cpd_platform
+    - opencontent_elasticsearch
+    - ccs
+
+watsonx_ai:
+  required_charts:
+    - cpd_platform
+    - opencontent_elasticsearch
+    - ccs
+    - watsonx_ai_ifm
+    - ws_runtimes
+    - datarefinery
+    - ws
+    - wml
+dp:
+  required_charts:
+    - cpd_platform
+    - analyticsengine # if it's removed from ikc_standard at some point
+
+syntheticdata:
+  required_charts:
+    - cpd_platform
+    - opencontent_elasticsearch
+    - ccs
+    - canvasbase
+
+wkc:
+  required_charts:
+    - opencontent_elasticsearch
+    - ccs
+    - analyticsengine
+    - db2u
+    - db2aaservice
+    - opencontent_fdb
+    - fdb_k8s
+    - datastage_ent
+    - datarefinery

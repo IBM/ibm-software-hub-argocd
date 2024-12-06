@@ -1,0 +1,13 @@
+block_storage_class: ''
+cpd_instance_namespace: cpd-instance
+cpd_operators_namespace: cpd-operator
+cpd_release: 5.1.0
+file_storage_class: ''
+openpages:
+  catsrc_display_name: ibm-openpages-8.0.0+20241112.105608.900401263
+  catsrc_image: icr.io/cpopen/ibm-cpd-openpages-operator-catalog@sha256:d5a7ca21508d2deb71d6363fc0f237f295cc0b13c1164d38c4bd9488d87af02e
+  cr_version: 9.4.0
+  dependencies: cpd_platform,db2aaservice
+  sub_channel: v8.0
+pre_sync_hook_sa: cpd-pre-sync-sa
+pre_sync_job_image: icr.io/cpopen/cpd/olm-utils-v3:latest

@@ -1,0 +1,12 @@
+block_storage_class: ''
+cpd_instance_namespace: cpd-instance
+cpd_operators_namespace: cpd-operator
+cpd_release: 5.1.0
+file_storage_class: ''
+opencontent_rabbitmq:
+  catsrc_display_name: ibm-rabbitmq-operator-1.0.42
+  catsrc_image: icr.io/cpopen/opencontent-rabbitmq-operator-catalog@sha256:d51f077a4d4c8ceb9e0996de3e8bbf3460e3c2ed27efef78427995990733de14
+  dependencies: cpd_platform
+  sub_channel: v1.0
+pre_sync_hook_sa: cpd-pre-sync-sa
+pre_sync_job_image: icr.io/cpopen/cpd/olm-utils-v3:latest

@@ -1,0 +1,77 @@
+{{- $full_comp_dict := dict }}
+{{- range $i, $comp := .Values.components }}
+{{- $valid_comp_name := $comp | replace "-" "_" }}
+{{- $comp_values := get $.Values $valid_comp_name }}
+    {{- if and $comp_values $comp_values.required_charts }}
+    {{- range $j, $required_chart := $comp_values.required_charts }}
+        {{- if not (hasKey $full_comp_dict $required_chart) }}
+        {{- $_ := set $full_comp_dict $required_chart "true" }}
+        {{- end}}
+    {{- end }}
+    {{- end }}
+        {{- if not (hasKey $full_comp_dict $comp)}}
+        {{- $_ := set $full_comp_dict $comp "true"}}
+    {{- end }}
+{{- end }}
+{{- range $comp, $_ := $full_comp_dict }}
+{{- $valid_comp_name := $comp | replace "-" "_" }}
+{{- $comp_overrides := get $.Values $valid_comp_name }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $comp | replace "_" "-" }}-app-{{ $.Values.cluster_name | replace "/" "-" |replace ":" "" }}-{{ $.Values.cpd_instance_namespace | trunc 64 }}
+  namespace: {{ $.Values.argocd_namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+  labels:
+    cpd-component: {{ $comp }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io #this finalizer is required to enable k8s garbage collection when the app is deleted
+spec:
+  destination:
+    name: {{ $.Values.cluster_name }}
+    namespace: default
+  source:
+    path: {{ $.Values.cpd_release }}/{{ $comp }}
+    repoURL: '{{ $.Values.repo_url }}'
+    targetRevision: {{ $.Values.target_revision }}
+    helm:
+      values: |
+{{- if $comp_overrides }}
+        {{ $valid_comp_name }}:
+{{ $comp_overrides|toYaml |indent 10 }}
+{{- end}}
+      parameters:
+        - name: cpd_instance_namespace
+          value: {{ $.Values.cpd_instance_namespace }}
+        - name: cpd_operators_namespace
+          value: {{ $.Values.cpd_operators_namespace }}
+        - name: block_storage_class
+          value: {{ $.Values.block_storage_class }}
+        - name: file_storage_class
+          value: {{ $.Values.file_storage_class }}
+        - name: pre_sync_hook_sa
+          value: {{ $.Values.pre_sync_hook_sa }}
+        - name: pre_sync_job_image
+          value: {{ $.Values.pre_sync_job_image }}
+        - name: cpd_release
+          value: {{ $.Values.cpd_release }}    
+{{- if or (eq $comp "watsonx_ai_ifm") ( eq $comp "cpd_platform") }}
+  {{- range $i, $c := $.Values.components }}
+        - name: components[{{ $i }}]
+          value: {{ $c }}
+  {{- end }}
+{{- end }}
+  project: {{ $.Values.argocd_project }}
+  syncPolicy:
+    automated: {}
+    retry:
+      limit: 5
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 3m0s
+{{- end }}
+
+

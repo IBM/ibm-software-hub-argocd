@@ -1,0 +1,13 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-cpd-watsonx-ai-operator
+  namespace: {{ .Values.cpd_operators_namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  channel: {{ .Values.watsonx_ai.sub_channel }}
+  installPlanApproval: Automatic
+  name: ibm-cpd-watsonx-ai
+  source: ibm-cpd-watsonx-ai-operator-catalog
+  sourceNamespace: {{ .Values.cpd_operators_namespace }}

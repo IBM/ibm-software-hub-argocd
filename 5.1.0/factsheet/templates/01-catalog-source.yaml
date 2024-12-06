@@ -1,0 +1,17 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  namespace: {{ .Values.cpd_operators_namespace }}
+  name: ibm-cpd-factsheet-operator-catalog
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  displayName: {{ .Values.factsheet.catsrc_display_name }}
+  publisher: IBM
+  image: {{ .Values.factsheet.catsrc_image }}
+  sourceType: grpc
+  updateStrategy:
+    registryPoll:
+      interval: 30m0s
+  grpcPodConfig:
+    securityContextConfig: restricted

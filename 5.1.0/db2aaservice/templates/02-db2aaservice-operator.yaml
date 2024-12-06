@@ -1,0 +1,13 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ibm-db2aaservice-cp4d-operator
+  namespace: {{ .Values.cpd_operators_namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  channel: {{ .Values.db2aaservice.sub_channel }}
+  installPlanApproval: Automatic
+  name: ibm-db2aaservice-cp4d-operator
+  source: ibm-db2aaservice-cp4d-operator-catalog
+  sourceNamespace: {{ .Values.cpd_operators_namespace }}

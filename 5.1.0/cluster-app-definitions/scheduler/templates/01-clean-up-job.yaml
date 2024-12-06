@@ -1,0 +1,44 @@
+#required starting 5.1.0 due to scheduler operator changed from OwnNamespace mode to AllNamespace. Must delete sub and csv before upgrading.
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: scheduler-sub-cleanup-job
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-options: Force=true,Replace=true
+  namespace: {{ .Values.scheduler.namespace}}
+spec:
+  template:
+    spec:
+      containers:
+      - name: cleanup
+        image: {{ .Values.pre_sync_job_image }}
+        command:
+          - bash
+          - -c
+          - |
+            scheduler_sub_name=$(oc get sub -l operators.coreos.com/ibm-cpd-scheduling-operator.{{ .Values.scheduler.namespace }} -o name --ignore-not-found)
+            scheduler_csv_name=$(oc get csv -l operators.coreos.com/ibm-cpd-scheduling-operator.{{ .Values.scheduler.namespace }} -o name --ignore-not-found)
+            if [[ $scheduler_sub_name != "" ]]; then
+              echo "scheduler operator '${scheduler_sub_name}' found"
+              scheduler_sub_channel=$(oc get $scheduler_sub_name -o jsonpath='{.spec.channel}')
+              if [[ $scheduler_sub_channel != "{{.Values.scheduler.sub_channel}}" ]]; then
+                echo "deleting '$scheduler_sub_name'"
+                oc delete ${scheduler_sub_name}
+              fi
+            else
+              echo "No scheduler operator subscription found. Skip deletion"
+            fi
+            if [[ $scheduler_csv_name != "" ]]; then
+              echo "scheduler operator ${scheduler_csv_name} found"
+              scheduler_csv_version=$(oc get $schedulercsv_name -o jsonpath='{.spec.version}')
+              if [[ $scheduler_csv_version != {{ .Values.scheduler.csv_version }} ]]; then
+                echo "deleting $scheduler_csv_name"
+                oc delete $scheduler_csv_name
+              fi
+            else
+              echo "No scheduler operator csv found. Skip deletion"
+            fi
+      restartPolicy: Never
+      serviceAccount: scheduler-sub-sa

@@ -16,6 +16,10 @@ auto_sync: true
 
 apply_entitlement: ""
 
+analyticsengine:
+  required_charts:
+    - cpd_platform
+
 ccs:
   required_charts:
     - cpd_platform
@@ -137,3 +141,12 @@ syntheticdata:
     - opencontent_elasticsearch
     - ccs
     - canvasbase
+
+datastage_ent:
+  required_charts:
+    - opencontent_elasticsearch
+    - ccs
+
+openscale:
+  required_charts:
+    - cpd_platform

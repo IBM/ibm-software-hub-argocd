@@ -1,0 +1,13 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: rabbitmq-operator
+  namespace: {{ .Values.cpd_operators_namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  channel: {{ .Values.opencontent_rabbitmq.sub_channel }}
+  installPlanApproval: Automatic
+  name: ibm-rabbitmq-operator
+  source: ibm-rabbitmq-operator-catalog
+  sourceNamespace: {{ .Values.cpd_operators_namespace }}

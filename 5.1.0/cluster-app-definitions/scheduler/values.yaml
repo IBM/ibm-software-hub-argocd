@@ -1,0 +1,14 @@
+argocd_namespace: openshift-gitops
+pre_sync_job_image: icr.io/cpopen/cpd/olm-utils-v3:latest
+scheduler:
+  catsrc_display_name: ibm-cpd-scheduling-1.40.0+20241107.001755.35acbf7
+  catsrc_image: icr.io/cpopen/ibm-cpd-scheduler-operator-catalog@sha256:990fefa616a00281030c29d852d23b2fffd580f7bb40692660c02cc69e92b7d2
+  cr_name: ibm-cpd-scheduler
+  cr_version: 1.40.0
+  disablePjc: false
+  enableMcScheduler: true
+  namespace: scheduler-ns
+  runPodsOnManagementNodes: false
+  setPodPriority: true
+  sub_channel: v1.40
+  csv_version: 1.40.0

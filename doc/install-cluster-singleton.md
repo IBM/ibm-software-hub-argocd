@@ -2,8 +2,7 @@
 ## Prerequisites
 
 1. Prepare an OpenShift cluster with proper storage classes required by CPD. Login to the cluster as a cluster admin
-2. Install ArgoCD on your cluster. Follow steps in https://github.ibm.com/IBMSoftwareHub/ibm-software-hub-argoCD/wiki/Deploy-ArgoCD. Do NOT use community version of ArgoCD.
-3. Configure ArgoCD to pull from https://github.ibm.com/IBMSoftwareHub/ibm-software-hub-argoCD.git repo. See https://argo-cd.readthedocs.io/en/stable/user-guide/private-repositories/. Use GitHub token as password here.
+2. Install ArgoCD on your cluster.
 
 
 ## Procedure for Install/Upgrade
@@ -25,11 +24,6 @@ spec:
     repoURL: 'https://github.com/IBM/ibm-software-hub-argocd'
     targetRevision: main
     helm:
-      valueObject:
-        components: #[INPUT] set components to install, include all dependencies 
-          #- ibm-cert-manager # ibm-cert-manager is optional if you already have a RedHat or community cert manager installed
-          - ibm-licensing
-          - scheduler
       parameters: #overall overrides that go into every chile application and charts.
         #[INPUT] set namespace for each component; note that key cannot contains `_` so `ibm_cert_manager` and `ibm_licensing` are used here
         - name: scheduler.namespace
@@ -40,6 +34,10 @@ spec:
           value: licensing-ns
         - name: cpd_release
           value: 5.0.0
+        - name: components[0] #[INPUT] set components to install, include all dependencies 
+          value: ibm-licensing
+        - name: components[1]
+          value: scheduler
         # - name: cluster_name #[INPUT] If ArgoCD is not running on the target cluster, uncomment and put the cluster name (as defined in ArgoCD) here
         #   value: <cluster name>
   project: default

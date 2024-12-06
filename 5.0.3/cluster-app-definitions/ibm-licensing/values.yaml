@@ -1,0 +1,6 @@
+argocd_namespace: openshift-gitops
+ibm_licensing:
+  namespace: "ibm-licensing"
+  catsrc_image: "icr.io/cpopen/ibm-licensing-catalog@sha256:e14ef29968ffd911602f2e5be776480d1bbf0fa09de22415a3bedbabcf58860c"
+  sub_channel: v4.2
+  catsrc_display_name: ibm-licensing-4.2.7

@@ -1,0 +1,22 @@
+apiVersion: databases.cpd.ibm.com/v1
+kind: Db2oltpService
+metadata:
+  name: "{{ .Values.db2oltp.cr_name }}"
+  namespace: "{{ .Values.cpd_instance_namespace }}"
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-options: ServerSideApply=true #use server side apply as partial patching
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+  labels:
+    app.kubernetes.io/instance: db2oltp-cr
+    app.kubernetes.io/managed-by: olm-utils
+    app.kubernetes.io/name: db2oltp
+    icpdsupport/addOnId: db2oltp    
+spec:
+  license:
+    accept: true
+    license: Enterprise
+  version: "{{ .Values.db2oltp.cr_version }}"
+{{- if not (eq .Values.block_storage_class "") }}
+  blockStorageClass: {{ .Values.block_storage_class }}
+{{- end}}

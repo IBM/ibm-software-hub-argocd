@@ -1,0 +1,14 @@
+block_storage_class: managed-nfs-storage
+cognos_analytics:
+  catsrc_display_name: ibm-cognos-analytics-prod-27.0.0+20241108.193932.1920
+  catsrc_image: icr.io/cpopen/ibm-ca-operator-catalog@sha256:c30fe29fb7e8fbf11a57a04a1e1fc81ce5e75e32a2f5eb93c455dbbf66c1f020
+  cr_name: ca-addon-cr
+  cr_version: 27.0.0
+  dependencies: ccs
+  sub_channel: v27.0
+cpd_instance_namespace: cpd-instance
+cpd_operators_namespace: cpd-operator
+cpd_release: 5.1.0
+file_storage_class: managed-nfs-storage
+pre_sync_hook_sa: cpd-pre-sync-sa
+pre_sync_job_image: icr.io/cpopen/cpd/olm-utils-v3:latest

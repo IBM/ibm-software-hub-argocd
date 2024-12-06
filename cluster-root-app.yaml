@@ -13,11 +13,6 @@ spec:
     repoURL: 'https://github.com/IBM/ibm-software-hub-argocd'
     targetRevision: main
     helm:
-      valueObject:
-        components: #[INPUT] set components to install, include all dependencies 
-          - ibm-cert-manager
-          - ibm-licensing
-          - scheduler
       parameters: #overall overrides that go into every chile application and charts.
         #[INPUT] set namespace for each component; note that key cannot contains `_` so `ibm_cert_manager` and `ibm_licensing` are used here
         - name: scheduler.namespace
@@ -30,6 +25,12 @@ spec:
           value: in-cluster
         - name: cpd_release
           value: 5.0.0
+        - name: components[0]
+          value: scheduler
+        - name: components[1]
+          value: ibm-licensing
+        - name: components[2]
+          value: ibm-cert-manager
   project: default
   syncPolicy:
     retry:

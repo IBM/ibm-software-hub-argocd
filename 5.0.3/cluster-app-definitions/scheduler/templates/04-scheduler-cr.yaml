@@ -1,0 +1,18 @@
+apiVersion: scheduler.spectrumcomputing.ibm.com/v1
+kind: Scheduling
+metadata:
+  name: "{{ .Values.scheduler.cr_name }}"
+  namespace: "{{ .Values.scheduler.namespace }}"
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+    argocd.argoproj.io/sync-options: ServerSideApply=true #use server side apply as partial patching
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  disablePjc: {{ .Values.scheduler.disablePjc }}
+  enableMcScheduler: {{ .Values.scheduler.enableMcScheduler }}
+  license:
+    accept: true
+  runPodsOnManagementNodes: {{ .Values.scheduler.runPodsOnManagementNodes }}
+  setPodPriority: {{ .Values.scheduler.setPodPriority }}
+  version: {{ .Values.scheduler.cr_version }}
+  

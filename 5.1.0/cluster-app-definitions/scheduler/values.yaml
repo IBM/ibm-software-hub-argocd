@@ -1,8 +1,8 @@
 argocd_namespace: openshift-gitops
 pre_sync_job_image: icr.io/cpopen/cpd/olm-utils-v3:latest
 scheduler:
-  catsrc_display_name: ibm-cpd-scheduling-1.40.0+20241107.001755.35acbf7
-  catsrc_image: icr.io/cpopen/ibm-cpd-scheduler-operator-catalog@sha256:990fefa616a00281030c29d852d23b2fffd580f7bb40692660c02cc69e92b7d2
+  catsrc_display_name: ibm-cpd-scheduling-1.40.0+20241121.001816.4bcbeac
+  catsrc_image: icr.io/cpopen/ibm-cpd-scheduler-operator-catalog@sha256:02e3d4b71315642900b6d557bee2f459cc4bcb6e6bbb258c48d08a172bc0eadb
   cr_name: ibm-cpd-scheduler
   cr_version: 1.40.0
   disablePjc: false

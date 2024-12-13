@@ -6,8 +6,8 @@ file_storage_class: ''
 pre_sync_hook_sa: cpd-pre-sync-sa
 pre_sync_job_image: icr.io/cpopen/cpd/olm-utils-v3:latest
 syntheticdata:
-  catsrc_display_name: ibm-syntheticdata-10.0.0+20241113.202227.44
-  catsrc_image: icr.io/cpopen/ibm-cpd-syntheticdata-operator-catalog@sha256:5f115606c2c91a96576d97848dcdd59346fcf3c427013d2abd3e328d04b7158f
+  catsrc_display_name: ibm-syntheticdata-10.0.0+20241115.231929.45
+  catsrc_image: icr.io/cpopen/ibm-cpd-syntheticdata-operator-catalog@sha256:347abf9b5eedfe611ad6a39be1147091ad68460906ad8b3b634ee36cff409b10
   cr_version: 10.0.0
   dependencies: cpd_platform,ccs
   sub_channel: v10.0

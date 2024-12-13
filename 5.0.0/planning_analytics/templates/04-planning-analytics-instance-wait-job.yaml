@@ -1,0 +1,84 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: planning-analytics-instance-dep-wait-job-{{ .Values.cpd_instance_namespace | trunc 64 }}
+  namespace: {{ .Values.cpd_instance_namespace }}
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+spec:
+  template:
+    spec:
+      containers:
+      - name: dep
+        image: {{ .Values.pre_sync_job_image }} #TODO:had to manually set this to 5.1.x. It was latest before
+        command:
+          - bash
+          - -c
+          - |
+            function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; }
+            export cpd_operator_ns="{{ .Values.cpd_operators_namespace }}"
+            export cpd_instance_ns="{{ .Values.cpd_instance_namespace }}" 
+            cd /opt/ansible/bin
+            while : ; do
+              python3 fetch-status.py --release={{ .Values.cpd_release }} --namespace={{ .Values.cpd_instance_namespace }} --components=cpd_platform,planning_analytics
+              if [ $? -eq 0 ]; then
+                break
+              fi
+              echo "[INFO] sleeping for 60s before retry..."
+              sleep 60
+            done
+            echo "===========================DONE========================="
+            export INSTANCE_NAME={{ .Values.planning_analytics.pa_instance_name }}
+            export INSTANCE_PROJECT={{ .Values.cpd_instance_namespace }}
+            export INSTANCE_VERSION={{ .Values.cpd_release }}
+            export INSTANCE_SIZE={{ .Values.planning_analytics.pa_instance_size }}
+            export MYSQL_PV_SIZE={{ .Values.planning_analytics.pa_instance_sql_size }}
+            export COUCHDB_PV_SIZE={{ .Values.planning_analytics.pa_instance_couch_size }}
+            export MONGODB_PV_SIZE={{ .Values.planning_analytics.pa_instance_mongo_size }}
+            export REDIS_PV_SIZE={{ .Values.planning_analytics.pa_instance_redis_size }}
+            export STG_CLASS_FILE={{ .Values.file_storage_class }}
+            export STG_CLASS_BLOCK={{ .Values.block_storage_class }}
+            zenservice_version=$(oc get zenservice lite-cr -n {{ .Values.cpd_instance_namespace }} -o jsonpath={.spec.version})
+            if [[ $zenservice_version == *"6.1"* ]] || [[ $zenservice_version > *"6.1"* ]]; then
+              export cluster_route_name=$(oc get routes -n {{ .Values.cpd_instance_namespace }} cpd -o jsonpath='{.spec.host}')
+            else 
+              export cluster_route_name=$(oc get routes -n {{ .Values.cpd_instance_namespace }} | awk '{print $2}' |grep -v HOST | grep "^cpd-{{ .Values.cpd_instance_namespace }}")
+            fi 
+            cp4dUser=admin
+            zenservice_version=$(oc get zenservice lite-cr -n {{ .Values.cpd_instance_namespace }} -o jsonpath={.spec.version})
+            export isIAMEnabled=$(oc get zenservice lite-cr -n {{ .Values.cpd_instance_namespace }} -o jsonpath={.spec.iamIntegration})
+            if [[ $isIAMEnabled == "true" ]]
+            then
+              cp4dUser=cpadmin
+              echo 'IAM ENABLED'
+              cp4dPassword=$(oc -n {{ .Values.cpd_instance_namespace }} get secret ibm-iam-bindinfo-platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 --decode)
+              echo "IAM is enabled, using admin password: $cp4dPassword"
+              #Get I am Access token
+              if [[ $zenservice_version == *"6.1"* ]] || [[ $zenservice_version > *"6.1"* ]]; then
+                route1=`oc get routes -n {{ .Values.cpd_instance_namespace }} cpd -o jsonpath={.spec.host}`
+              else 
+                route1=`oc get route --no-headers -n {{ .Values.cpd_instance_namespace }} cp-console | grep cp-console | awk '{print $2}'`
+              fi
+              response=$(curl --retry-delay 30 --retry 3 -s -k -X  POST --url https://${route1}/idprovider/v1/auth/identitytoken -d "grant_type=password&username=cpadmin&password=${cp4dPassword}&scope=openid")
+              pretoken=$(echo $response | python3 -c 'import sys, json; print(json.load(sys.stdin)["access_token"])')
+              echo $pretoken
+              #Use above token to genearte zen token
+              response=$(curl --retry-delay 30 --retry 3 -s -k -X GET --url https://${cluster_route_name}/v1/preauth/validateAuth --header "username: cpadmin" --header "iam-token: $pretoken")
+              echo $response
+              export TOKEN=$(echo $response | python3 -c 'import sys, json; print(json.load(sys.stdin)["accessToken"])')
+            else
+              cp4dPassword=$(oc extract secret/admin-user-details -n {{ .Values.cpd_instance_namespace }} --keys=initial_admin_password --to=-)
+              echo "IAM is not enabled, using admin password: $cp4dPassword"
+              echo ${cluster_route_name}
+              response=$(curl --retry-delay 30 --retry 3 -s -k -X  GET --url https://${cluster_route_name}/v1/preauth/validateAuth -u ${cp4dUser}:${cp4dPassword})
+              export TOKEN=$(echo $response | python3 -c 'import sys, json; print(json.load(sys.stdin)["accessToken"])')
+            fi
+            DATA="{\"addon_type\":\"pa\",\"addon_version\":\"$INSTANCE_VERSION\",\"create_arguments\":{\"resources\":{},\"parameters\":{\"paw_instance_name\":\"$INSTANCE_NAME\",\"persistence.class\":\"$STG_CLASS_BLOCK\",\"persistence.mysqlSize\":\"${MYSQL_PV_SIZE}Gi\",\"persistence.mongoSize\":\"${MONGODB_PV_SIZE}Gi\",\"persistence.redisSize\":\"${REDIS_PV_SIZE}Gi\",\"scaleConfig\":\"$INSTANCE_SIZE\",\"common.tm1InternalType\":true,\"common.tm1Location\":\"http://pa-service-provider-api:1212\",\"tm1Service.storageClass\":\"$STG_CLASS_FILE\"},\"description\":\"\",\"metadata\":{\"addon_version\":\"$INSTANCE_VERSION\"}},\"display_name\":\"$INSTANCE_NAME\",\"namespace\":\"$cpd_instance_ns\",\"transient_fields\":{}}"
+            curl -k https://${cluster_route_name}/zen-data/v3/service_instances \
+              -H 'Accept: application/json' \
+              -H 'Content-Type: application/json' \
+              -H "Authorization: Bearer $TOKEN" \
+              -H 'Content-Type: application/json' \
+              --data-raw "$DATA"
+      restartPolicy: Never
+      serviceAccount:  {{ .Values.pre_sync_hook_sa }}

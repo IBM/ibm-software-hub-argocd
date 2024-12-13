@@ -3,8 +3,8 @@ cpd_instance_namespace: cpd-instance
 cpd_operators_namespace: cpd-operator
 cpd_release: 5.1.0
 db2oltp:
-  catsrc_display_name: ibm-db2oltp-5.1.0+20241024.192517.2660.3668
-  catsrc_image: icr.io/cpopen/ibm-db2oltp-cp4d-operator-catalog@sha256:64d3cf0c23fd011258b3d8c88299296e6c47c7e3a8cee5d6156b28d8d2c75061
+  catsrc_display_name: ibm-db2oltp-5.1.0+20241107.162510.2667.3736
+  catsrc_image: icr.io/cpopen/ibm-db2oltp-cp4d-operator-catalog@sha256:620da0d733f653d3f3aa0f9fe11d12995dab1e827e3eccf88e330dadd3875434
   cr_name: db2oltp-cr
   cr_version: 5.1.0
   dependencies: cpd_platform

@@ -1,7 +1,7 @@
 block_storage_class: ''
 ccs:
-  catsrc_display_name: ibm-ccs-10.0.0+20241114.172141.369
-  catsrc_image: icr.io/cpopen/ibm-cpd-ccs-operator-catalog@sha256:77a828b3d09774521231e2b95d53649a71b33402bbe5078e5bf9d0ef0fd49e79
+  catsrc_display_name: ibm-ccs-10.0.0+20241120.155209.370
+  catsrc_image: icr.io/cpopen/ibm-cpd-ccs-operator-catalog@sha256:ef1b984b84a493adcfc0965a57f78120986f0e21664bea2a00a59cf10206e28c
   cr_version: 10.0.0
   dependencies: cpd_platform
   scale_config: small

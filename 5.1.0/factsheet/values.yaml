@@ -3,8 +3,8 @@ cpd_instance_namespace: cpd-instance
 cpd_operators_namespace: cpd-operator
 cpd_release: 5.1.0
 factsheet:
-  catsrc_display_name: ibm-factsheet-5.0.0+20241113.174729.129
-  catsrc_image: icr.io/cpopen/ibm-cpd-factsheet-operator-catalog@sha256:f6bbe9b6b853577ed7c0f43907a7f1899229411d2e64861e1b362ee9ba8a8b25
+  catsrc_display_name: ibm-factsheet-5.0.0+20241120.161527.134
+  catsrc_image: icr.io/cpopen/ibm-cpd-factsheet-operator-catalog@sha256:79ef0a5b84cfd5002d3843584e4e4b08af653e37e529abf7f5aabcc3858f8f30
   cr_version: 5.1.0
   dependencies: ccs
   sub_channel: v5.0

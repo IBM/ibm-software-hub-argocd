@@ -6,8 +6,8 @@ file_storage_class: ''
 pre_sync_hook_sa: cpd-pre-sync-sa
 pre_sync_job_image: icr.io/cpopen/cpd/olm-utils-v3:latest
 wml:
-  catsrc_display_name: ibm-wml-cpd-10.0.0+20241114.115523.1491
-  catsrc_image: icr.io/cpopen/ibm-cpd-wml-operator-catalog@sha256:707b5c9815dba2122e72a8a4cc61a1f008da80228f3f7fe9155bb17f0b905b10
+  catsrc_display_name: ibm-wml-cpd-10.0.0+20241120.141353.1493
+  catsrc_image: icr.io/cpopen/ibm-cpd-wml-operator-catalog@sha256:845790da73f564f1e6f7fe259076504475d97ab5fc6047b5fec1529ba1666bc4
   cr_version: 5.1.0
   dependencies: cpd_platform,ccs
   sub_channel: v7.0

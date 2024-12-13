@@ -3,8 +3,8 @@ cpd_instance_namespace: cpd-instance
 cpd_operators_namespace: cpd-operator
 cpd_release: 5.1.0
 datastage_ent:
-  catsrc_display_name: ibm-datastage-enterprise-9.0.0+20241113.135627.2825
-  catsrc_image: icr.io/cpopen/ds-operator-catalog@sha256:e57cc59ae143667b88c550a0fdc851ae75424125c7f18284561c77afa495e4f2
+  catsrc_display_name: ibm-datastage-enterprise-9.0.0+20241204.123143.2854
+  catsrc_image: icr.io/cpopen/ds-operator-catalog@sha256:051582ce8b81f7a104f7ab982456d321643972f8cedbb10f90e62664d9818359
   cr_name: datastage
   cr_version: 5.1.0
   dependencies: ccs

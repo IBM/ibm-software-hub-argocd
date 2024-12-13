@@ -1,7 +1,7 @@
 block_storage_class: ''
 canvasbase:
-  catsrc_display_name: ibm-canvasbase-10.0.0+20241113.215243.32
-  catsrc_image: icr.io/cpopen/ibm-cpd-canvasbase-operator-catalog@sha256:779b3c9f7f913bd5da1254b7d51fe031ffd18776b110d318795b3be1c5e00675
+  catsrc_display_name: ibm-canvasbase-10.0.0+20241115.192858.33
+  catsrc_image: icr.io/cpopen/ibm-cpd-canvasbase-operator-catalog@sha256:b5034548bb69dd8ff8a05996ab168bdd97c74677ec35898f9a2d409d5912ab8f
   sub_channel: v10.0
 cpd_instance_namespace: cpd-instance
 cpd_operators_namespace: cpd-operator
